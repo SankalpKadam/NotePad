@@ -1,7 +1,6 @@
 package Components.Menu;
 
 import java.awt.Color;
-import java.awt.PrintJob;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterJob;
