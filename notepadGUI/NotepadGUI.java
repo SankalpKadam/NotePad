@@ -1,3 +1,4 @@
+package notepadGUI;
 import java.awt.*;
 
 import javax.swing.JFrame;
@@ -6,9 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-
 import Components.CustomTextArea;
 import Components.Menu.CustomMenuPanel;
+
+
+
 
 public class NotepadGUI extends JFrame {
     private static Dimension screensizeDimension = Toolkit.getDefaultToolkit().getScreenSize();
