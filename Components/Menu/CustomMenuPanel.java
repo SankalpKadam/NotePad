@@ -24,7 +24,9 @@ public class CustomMenuPanel {
         // Adding components to menu panel
         this.menuJPanel.add(getFileMenu(textArea));
         this.menuJPanel.add(getEditMenu(textArea));
-        this.menuJPanel.add(getHelpMenu(textArea));
+        this.menuJPanel.add(getViewMenu(textArea));
+        this.menuJPanel.add(getHelpMenu(textArea));        
+
 
     }
 
@@ -45,6 +47,11 @@ public class CustomMenuPanel {
 
     private JMenuBar getHelpMenu(JTextArea textArea) {
         JMenuBar MenuBar = new HelpMenu(textArea).getHelpMenuBar();
+        return MenuBar;
+    }
+
+    private JMenuBar getViewMenu(JTextArea textArea) {
+        JMenuBar MenuBar = new ViewMenu(textArea).getViewMenuBar();
         return MenuBar;
     }
 }
