@@ -1,8 +1,10 @@
 package Components.Menu;
 
 import java.awt.Color;
+import java.awt.PrintJob;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Scanner;
@@ -77,7 +79,7 @@ public class FileMenu {
         Action printAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveTheFile();
+                printTheFile();
             }
 
         };
@@ -145,6 +147,19 @@ public class FileMenu {
             }
         } else {
             System.out.println("error");
+        }
+    }
+
+    //Private method to print the file
+    private void printTheFile(){
+        PrinterJob printerJob = PrinterJob.getPrinterJob();
+        if (printerJob.printDialog()) {
+            try {
+                printerJob.print();
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println("Error in printing");
+            }
         }
     }
 }
