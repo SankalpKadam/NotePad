@@ -2,18 +2,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class NotepadGUI extends JFrame {
     Dimension screensizeDimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -23,19 +26,22 @@ public class NotepadGUI extends JFrame {
     }
 
     private void initialize() {
-        setAlwaysOnTop(true);
+
         setTitle("NotePad");
-        setBackground(Color.WHITE);
+        getContentPane().setBackground(Color.GRAY);
         setSize(screensizeDimension.width, screensizeDimension.height);
         setResizable(true);
-
+        setLayout(new BorderLayout());
     }
 
     public static void main(String[] args) {
         NotepadGUI new_ui = new NotepadGUI();
-        new_ui.add(getMenuPanel());
-        new_ui.add(getTextPanel());
-        // new_ui.setJMenuBar(getFileOptionsPanel());
+        new_ui.add(getMenuPanel(), BorderLayout.NORTH);
+        JScrollPane textAreaScrollPane = new JScrollPane(getTextPanel());
+        textAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        textAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        textAreaScrollPane.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height);
+        new_ui.add(textAreaScrollPane,BorderLayout.CENTER);
         new_ui.setVisible(true);
 
     }
@@ -75,13 +81,21 @@ public class NotepadGUI extends JFrame {
         return menuJPanel;
     }
 
-    private static JPanel getTextPanel() {
+    private static JTextArea getTextPanel() {
         // Creating text panel
         JPanel textJPanel = new JPanel();
-        textJPanel.setBounds(0, 20, Toolkit.getDefaultToolkit().getScreenSize().width,
-                Toolkit.getDefaultToolkit().getScreenSize().height - 20);
+
+        JTextArea textArea = new JTextArea();
+        textArea.setFont(new Font("serif", Font.BOLD, 16));
+        textArea.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height-30);
+        textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        //setting properties for textPanel
+        textJPanel.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width,
+        Toolkit.getDefaultToolkit().getScreenSize().height - 20);
         textJPanel.setBackground(Color.white);
-        return textJPanel;
+        textJPanel.add(textArea);
+
+        return textArea;
     }
 
     private static JMenu getFileOptionsMenu() {
@@ -94,7 +108,7 @@ public class NotepadGUI extends JFrame {
         Action createAction = new AbstractAction("New") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("New");
+                System.out.println("new");
             }
         };
         // setting keyboard shortcut to perform necessary action
@@ -105,7 +119,7 @@ public class NotepadGUI extends JFrame {
         Action openAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Open");
+                openFile("Open");
             }
         };
         openAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
@@ -127,6 +141,18 @@ public class NotepadGUI extends JFrame {
 
         return fileMenu;
 
+    }
+
+    private static void openFile(String string) {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files only", "txt");
+        chooser.setFileFilter(filter);
+        int result = chooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            System.out.println("file choosen correctly");
+        } else {
+            System.out.println("error");
+        }
     }
 
     private static JMenu getEditOptionsMenu() {
