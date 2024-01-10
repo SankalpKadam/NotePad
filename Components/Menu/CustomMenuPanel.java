@@ -1,7 +1,7 @@
 package Components.Menu;
 
 import javax.swing.BorderFactory;
-import javax.swing.JMenu;
+
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
