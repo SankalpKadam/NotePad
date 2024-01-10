@@ -23,9 +23,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import Components.CustomTextArea;
 
 public class NotepadGUI extends JFrame {
-    Dimension screensizeDimension = Toolkit.getDefaultToolkit().getScreenSize();
+    static Dimension screensizeDimension = Toolkit.getDefaultToolkit().getScreenSize();
     static CustomTextArea textArea = new CustomTextArea();
-
+    static String clipBoard;
     public NotepadGUI() {
         initialize();
     }
@@ -45,8 +45,8 @@ public class NotepadGUI extends JFrame {
         JScrollPane textAreaScrollPane = new JScrollPane(textArea.getTextArea());
         textAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         textAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        textAreaScrollPane.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width,
-                Toolkit.getDefaultToolkit().getScreenSize().height);
+        textAreaScrollPane.setBounds(0, 30, screensizeDimension.width,
+                screensizeDimension.height);
         new_ui.add(textAreaScrollPane, BorderLayout.CENTER);
         new_ui.setVisible(true);
 
@@ -57,7 +57,7 @@ public class NotepadGUI extends JFrame {
         JPanel menuJPanel = new JPanel();
         LayoutManager layoutManager = new FlowLayout(FlowLayout.LEFT);
         // Setting the panel properties
-        menuJPanel.setBounds(0, 0, Toolkit.getDefaultToolkit().getScreenSize().width, 30);
+        menuJPanel.setBounds(0, 0, screensizeDimension.width, 30);
         menuJPanel.setLayout(layoutManager);
         menuJPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
         menuJPanel.setBackground(Color.WHITE);
@@ -87,18 +87,18 @@ public class NotepadGUI extends JFrame {
         return menuJPanel;
     }
 
-    private static JTextArea getTextPanel() {
+    // private static JTextArea getTextPanel() {
 
-        // Creating text area
-        JTextArea textArea = new JTextArea();
-        // setting properties for textArea
-        textArea.setFont(new Font("serif", Font.BOLD, 16));
-        textArea.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width,
-                Toolkit.getDefaultToolkit().getScreenSize().height - 30);
-        textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+    //     // Creating text area
+    //     JTextArea textArea = new JTextArea();
+    //     // setting properties for textArea
+    //     textArea.setFont(new Font("serif", Font.BOLD, 16));
+    //     textArea.setBounds(0, 30, screensizeDimension.width,
+    //             screensizeDimension.height - 30);
+    //     textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
-        return textArea;
-    }
+    //     return textArea;
+    // }
 
     private static void saveTheFile() {
         JFileChooser chooser = new JFileChooser();
@@ -200,7 +200,7 @@ public class NotepadGUI extends JFrame {
         Action copyAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("copy");
+                clipBoard = textArea.getTextArea().getSelectedText();
             }
         };
         // Setting keyboard shortcut for the menu item
@@ -212,7 +212,7 @@ public class NotepadGUI extends JFrame {
         Action pasteAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("paste");
+                textArea.getTextArea().insert(clipBoard, textArea.getTextArea().getCaretPosition());
             }
         };
         pasteAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
@@ -223,7 +223,8 @@ public class NotepadGUI extends JFrame {
         Action cutAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("cut");
+                clipBoard = textArea.getTextArea().getSelectedText();
+                textArea.getTextArea().replaceSelection(null);
             }
         };
         cutAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
