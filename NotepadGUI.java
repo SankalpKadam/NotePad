@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileWriter;
+import java.util.Scanner;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -18,8 +20,11 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import Components.CustomTextArea;
+
 public class NotepadGUI extends JFrame {
     Dimension screensizeDimension = Toolkit.getDefaultToolkit().getScreenSize();
+    static CustomTextArea textArea = new CustomTextArea();
 
     public NotepadGUI() {
         initialize();
@@ -37,11 +42,12 @@ public class NotepadGUI extends JFrame {
     public static void main(String[] args) {
         NotepadGUI new_ui = new NotepadGUI();
         new_ui.add(getMenuPanel(), BorderLayout.NORTH);
-        JScrollPane textAreaScrollPane = new JScrollPane(getTextPanel());
+        JScrollPane textAreaScrollPane = new JScrollPane(textArea.getTextArea());
         textAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         textAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        textAreaScrollPane.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height);
-        new_ui.add(textAreaScrollPane,BorderLayout.CENTER);
+        textAreaScrollPane.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width,
+                Toolkit.getDefaultToolkit().getScreenSize().height);
+        new_ui.add(textAreaScrollPane, BorderLayout.CENTER);
         new_ui.setVisible(true);
 
     }
@@ -82,20 +88,34 @@ public class NotepadGUI extends JFrame {
     }
 
     private static JTextArea getTextPanel() {
-        // Creating text panel
-        JPanel textJPanel = new JPanel();
 
+        // Creating text area
         JTextArea textArea = new JTextArea();
+        // setting properties for textArea
         textArea.setFont(new Font("serif", Font.BOLD, 16));
-        textArea.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height-30);
+        textArea.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width,
+                Toolkit.getDefaultToolkit().getScreenSize().height - 30);
         textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        //setting properties for textPanel
-        textJPanel.setBounds(0, 30, Toolkit.getDefaultToolkit().getScreenSize().width,
-        Toolkit.getDefaultToolkit().getScreenSize().height - 20);
-        textJPanel.setBackground(Color.white);
-        textJPanel.add(textArea);
 
         return textArea;
+    }
+
+    private static void saveTheFile() {
+        JFileChooser chooser = new JFileChooser();
+        int result = chooser.showSaveDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            try {
+                FileWriter fileWriter = new FileWriter(file);
+                String writeData = textArea.getTextArea().getText();
+                System.out.println(writeData);
+                fileWriter.write(writeData);
+                fileWriter.close();
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println("Error"+e);
+            }
+        }
     }
 
     private static JMenu getFileOptionsMenu() {
@@ -108,7 +128,7 @@ public class NotepadGUI extends JFrame {
         Action createAction = new AbstractAction("New") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("new");
+                textArea.getTextArea().setText("");
             }
         };
         // setting keyboard shortcut to perform necessary action
@@ -129,8 +149,9 @@ public class NotepadGUI extends JFrame {
         Action saveAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Save");
+                saveTheFile();
             }
+
         };
         saveAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         saveFile.setAction(saveAction);
@@ -150,6 +171,19 @@ public class NotepadGUI extends JFrame {
         int result = chooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             System.out.println("file choosen correctly");
+            File file = chooser.getSelectedFile();
+            String fileData = "";
+            try {
+                Scanner fileReader = new Scanner(file);
+                while (fileReader.hasNextLine()) {
+                    fileData = fileReader.nextLine() + "\n";
+                    textArea.getTextArea().append(fileData);
+                }
+                fileReader.close();
+            } catch (Exception e) {
+                // TODO: handle exception
+                System.out.println(e);
+            }
         } else {
             System.out.println("error");
         }
@@ -211,7 +245,7 @@ public class NotepadGUI extends JFrame {
         JMenuItem helpItem = new JMenuItem();
         Action helpaction = new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 System.out.println("about");
             }
         };
